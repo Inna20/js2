@@ -29,10 +29,10 @@ class ProductList {
 
   _fetchProducts() {
     this.goods = [
-      {id: 1, title: 'Notebook', price: 40000},
-      {id: 2, title: 'Mouse', price: 1000},
-      {id: 3, title: 'Keyboard', price: 2500},
-      {id: 4, title: 'Gamepad', price: 1500},
+      {id: 1, title: 'Notebook', price: 40000, count: 2},
+      {id: 2, title: 'Mouse', price: 1000, count: 1},
+      {id: 3, title: 'Keyboard', price: 2500, count: 1},
+      {id: 4, title: 'Gamepad', price: 1500, count: 1},
     ];
   }
 
@@ -44,6 +44,11 @@ class ProductList {
       this.allProducts.push(productObject);
       block.insertAdjacentHTML('beforeend', productObject.render());
     }
+  }
+
+  // 2. метод, определяющий суммарную стоимость всех товаров.
+  calcSumPrice() {
+    return  this.goods.reduce((sum, item) => sum + item.price * item.count, 0);
   }
 }
 
