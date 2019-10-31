@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    class Hamburger {
+        constructor(size, stuffing) {
+            this.size = size;
+            this.stuffing = stuffing;
+            this.topping = [];
+            this.alowedTopping = ['spice', 'mayo'];
+            this.dictionary = {
+                'big': {'price': 100, 'calories': 40},
+                'small': {'price': 50, 'calories': 20},
+                'cheese': {'price':10 , 'calories':20},
+                'salad': {'price': 20, 'calories': 5},
+                'potato': {'price': 15, 'calories': 10},
+                'spice': {'price': 15, 'calories': 0},
+                'mayo': {'price': 20, 'calories': 5},
+            }
+        }
+        addTopping(topping) {
+            if (this.canAddTopping(topping))
+                this.topping.push(topping)
+        }
+        canAddTopping(topping) {
+            if ( this.alowedTopping.includes(topping) && !this.topping.includes(this.topping))
+                return true;
+            return false;
+        }
+        removeTopping(topping) {
+            let toppingIndex = this.topping.indexOf(topping);
+            if (toppingIndex !== -1)
+                this.topping.splice(toppingIndex, 1);
+        }
+
+        getToppings() {
+            const res = {'price': 0, 'calories': 0}
+
+            this.topping.forEach(function(item){
+                res.price += this.dictionary[item].price;
+                res.calories += this.dictionary[item].calories;
+            }, this);
+            return res;
+        }
+        getSize() {
+           return {'price': this.dictionary[this.size].price, 'calories': this.dictionary[this.size].calories}
+        }
+        getStuffing() {
+            return {'price': this.dictionary[this.stuffing].price, 'calories': this.dictionary[this.stuffing].calories}
+        }
+        calculatePrice() {
+            return this.getSize().price + this.getStuffing().price + this.getToppings().price;
+        }
+        calculateCalories() {
+            return this.getSize().calories + this.getStuffing().calories + this.getToppings().calories;
+        }
+    }
+    const ham = new Hamburger('small', 'salad');
+    // ham.addTopping('mayo');
+    // ham.addTopping('zzzz'); // ничего не добавит
+    // ham.addTopping('spice');
+    // ham.removeTopping('mayo');
+
+    console.log(`Стоимость гамбургера ${ham.calculatePrice()}`);
+    console.log(`Калорийность ${ham.calculateCalories()}`);
+
+</script>
+</body>
+</html>
