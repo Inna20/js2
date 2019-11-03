@@ -1,3 +1,21 @@
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+// Переделать в ДЗ
+let getRequest = (url, cb) => {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200) {
+        console.log('Error');
+      } else {
+        cb(xhr.responseText);
+      }
+    }
+  };
+  xhr.send();
+};
+
 class ProductItem {
   constructor(product, img = 'https://placehold.it/200x150') {
     this.title = product.title;
@@ -23,17 +41,29 @@ class ProductList {
     this.container = container;
     this.goods = [];
     this.allProducts = [];
-    this._fetchProducts();
-    this._render();
+    this._getProducts()
+      .then(data => {
+        this.goods = [...data];
+        this._render();
+      });
+    // this._fetchProducts();
+    // this._render();
   }
 
-  _fetchProducts() {
-    this.goods = [
-      {id: 1, title: 'Notebook', price: 40000, count: 2},
-      {id: 2, title: 'Mouse', price: 1000, count: 1},
-      {id: 3, title: 'Keyboard', price: 2500, count: 1},
-      {id: 4, title: 'Gamepad', price: 1500, count: 1},
-    ];
+  // _fetchProducts() {
+  //   getRequest(`${API}/catalogData.json`, (data) => {
+  //     this.goods = JSON.parse(data);
+  //     this._render();
+  //     console.log(this.goods);
+  //   });
+  // }
+
+  _getProducts() {
+    return fetch(`${API}/catalogData.json`)
+      .then(result => result.json())
+      .catch(error => {
+        console.log('Error: ', error);
+      });
   }
 
   _render() {
@@ -44,11 +74,6 @@ class ProductList {
       this.allProducts.push(productObject);
       block.insertAdjacentHTML('beforeend', productObject.render());
     }
-  }
-
-  // 2. метод, определяющий суммарную стоимость всех товаров.
-  calcSumPrice() {
-    return  this.goods.reduce((sum, item) => sum + item.price * item.count, 0);
   }
 }
 
