@@ -1,7 +1,7 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
 // Переделать в ДЗ
-let getRequest = (url, cb) => {
+let getRequest_old = (url, cb) => {
   let xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.onreadystatechange = () => {
@@ -16,9 +16,27 @@ let getRequest = (url, cb) => {
   xhr.send();
 };
 
+// with Promise
+let getRequest = (url) => {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+          reject('Error');
+        } else {
+          resolve(xhr.responseText);
+        }
+      }
+    };
+    xhr.send();
+  })
+  }
+
 class ProductItem {
   constructor(product, img = 'https://placehold.it/200x150') {
-    this.title = product.title;
+    this.title = product.product_name;
     this.price = product.price;
     this.id = product.id;
     this.img = img;
@@ -41,30 +59,38 @@ class ProductList {
     this.container = container;
     this.goods = [];
     this.allProducts = [];
-    this._getProducts()
-      .then(data => {
-        this.goods = [...data];
-        this._render();
-      });
-    // this._fetchProducts();
+    // this._getProducts()
+    //   .then(data => {
+    //     this.goods = [...data];
+    //     this._render();
+    //   });
+    this._fetchProducts();
     // this._render();
   }
 
-  // _fetchProducts() {
-  //   getRequest(`${API}/catalogData.json`, (data) => {
-  //     this.goods = JSON.parse(data);
-  //     this._render();
-  //     console.log(this.goods);
-  //   });
-  // }
-
-  _getProducts() {
-    return fetch(`${API}/catalogData.json`)
-      .then(result => result.json())
-      .catch(error => {
-        console.log('Error: ', error);
-      });
+  _fetchProducts() {
+    // getRequest(`${API}/catalogData.json`, (data) => {
+    //   this.goods = JSON.parse(data);
+    //   this._render();
+    //   console.log(this.goods);
+    // });
+    return getRequest(`${API}/catalogData.json`)
+        .then(result => {
+          this.goods = JSON.parse(result);
+          this._render();
+        })
+        .catch(error => {
+          console.log('Error: ', error);
+        });
   }
+
+  // _getProducts() {
+  //   return fetch(`${API}/catalogData.json`)
+  //     .then(result => result.json())
+  //     .catch(error => {
+  //       console.log('Error: ', error);
+  //     });
+  // }
 
   _render() {
     const block = document.querySelector(this.container);
