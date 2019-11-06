@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Урок 4 регулярные выражения</title>
+</head>
+<body>
+<script>
+    let str = "He said, 'I don't have much free time.' They said, 'We can't come to the party on Friday.' I said 'I'll'";
+    console.log(str.replace(/\B\'|\'\B/g, '"'));
+
+    console.log("aaa".replace(/a\b/g, 'z')); // aaz  // Все ок, как по доке
+    console.log("'''".replace(/\'\b/g, 'z')); // '''  // Ничего не поменялось
+    console.log("'aaa".replace(/\'\b/g, 'z')); // zaaa  // Если кавычка НЕ в конце слова - замена произошла
+
+</script>
+</body>
+</html>
