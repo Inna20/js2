@@ -38,22 +38,17 @@ class MyForm {
     }
 
     _init() {
-        this.form.addEventListener('click', e => {
-            if (e.target.type === 'submit') {
+        this.form.addEventListener('submit', e => {
                 e.preventDefault();
                 this.clearErrors();
                 document.querySelectorAll("input[type='text']").forEach((item) => {
                     this.checkField(item);
                 });
                 this.send();
-
-            // } else if (e.target.type === 'text') {
-            //     e.target.classList.remove('input-error');
-            }
         });
 
         document.querySelectorAll("input[type='text']").forEach((item) => {
-            item.addEventListener('mousedown', () => {
+            item.addEventListener('input', () => {
                 item.classList.remove('input-error');
             });
         });
