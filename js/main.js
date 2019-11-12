@@ -5,6 +5,7 @@ const app = new Vue({
   data: {
     catalogUrl: '/catalogData.json',
     products: [],
+    productsAll: [], // массив в который мы запоминаем все товары - для фильтрации и вывода если фильтр сброшен
     imgCatalog: 'https://placehold.it/200x150',
     imgCart: 'https://placehold.it/50x50',
     cartUrl: '/getBasket.json',
@@ -12,6 +13,7 @@ const app = new Vue({
     amount: 0,
     countGoods: 0,
     isVisibleCart: true,
+    searchLine: '',
   },
   methods: {
     getJson(url){
@@ -42,6 +44,19 @@ const app = new Vue({
     checkValue($event) { //change event - проверка, что не ввели < 1
       if (+$event.target.value < 1 )
         $event.target.value = 1;
+    },
+    filterGoods($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      if (this.searchLine.length) { // Если в поле введено слово - фильтруем
+          this.products = this.productsAll.filter((item) => {
+          let regSearch = new RegExp( `${this.searchLine}`, 'i');
+          return regSearch.test(item.product_name);
+        })
+      } else {
+        this.products = [...this.productsAll];
+      }
     }
   },
 
@@ -56,6 +71,7 @@ const app = new Vue({
         for(let el of data){
           this.products.push(el);
         }
+        this.productsAll = [...this.products];
       });
 
     this.getJson(`${API + this.cartUrl}`)
