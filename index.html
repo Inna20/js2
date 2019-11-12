@@ -17,25 +17,26 @@
             </button>
         </form>
         <div class="cart cart-hover-11">
-
-
                 <button class="btn-cart" type="button">Корзина</button>
                 <ul class="drop__ul_flex drop_cart">
-
-                    <!-- TODO -->
-                    <li class="drop__item">
-                        <a href="single.html"><img src="img/drop_cart1.jpg" alt="" class="cart__img"></a>
+                    <li class="drop__item"  v-for="cartItem of cartList" :key="cartItem.id_product">
                         <div class="drop_cart__info">
-                            <a href="single.html" class="drop_cart__title">Rebox Zane</a>
-                            <p class="drop_cart__price">1 x $250</p>
+                            <a :href="cartItem.url" class="drop_cart__title">{{cartItem.product_name}}</a>
+                            <input type="number" v-model.lazy="cartItem.quantity" min="1" @input="checkValue($event)"/>
+                            <p class="drop_cart__price">{{cartItem.price * cartItem.quantity}} $</p>
                         </div>
-                        <a href="#" class="drop_cart__close">
+                        <a href="#" class="drop_cart__close" @click="removeProduct(cartItem)">
                             <i class="fa fa-times-circle" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <!-- /TODO -->
+                    <li class="drop_cart__total" :class="{'hidden': !isVisibleCart}">
+                        <p>Количество товаров: {{countGoods}}</p>
+                        <p>Общая цена: {{amount}} $</p>
+                    </li>
+                    <li class="drop_cart__empty" :class="{'hidden': isVisibleCart}">
+                        <p>Нет данных</p>
+                    </li>
                 </ul>
-
         </div>
     </header>
     <main>
