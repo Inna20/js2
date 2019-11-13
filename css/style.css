@@ -177,11 +177,10 @@ img {
     border: 1px solid #ececec;
     list-style: none;
     position: absolute;
-   /* display: none;*/
     flex-direction: column;
     z-index: 1;
 }
-.cart:hover .drop__ul_flex {
+.drop__ul_flex {
     display: flex;
 }
 .drop__ul_flex::before {

@@ -10,15 +10,15 @@
 <div id="app">
     <header>
         <div class="logo">E-shop</div>
-        <form action="#" class="search-form" @submit="filterGoods">
+        <form action="#" class="search-form" @submit.prevent="filterGoods">
             <input type="text" class="search-field" v-model="searchLine">
             <button class="btn-search" type="submit">
                 <i class="fas fa-search"></i>
             </button>
         </form>
         <div class="cart cart-hover-11">
-                <button class="btn-cart" type="button">Корзина</button>
-                <ul class="drop__ul_flex drop_cart">
+                <button class="btn-cart" type="button" @click="showCart = !showCart">Корзина</button>
+                <ul class="drop__ul_flex drop_cart" :class="{'hidden': !showCart}">
                     <li class="drop__item"  v-for="cartItem of cartList" :key="cartItem.id_product">
                         <div class="drop_cart__info">
                             <a :href="cartItem.url" class="drop_cart__title">{{cartItem.product_name}}</a>

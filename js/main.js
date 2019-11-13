@@ -12,8 +12,9 @@ const app = new Vue({
     cartList: [],
     amount: 0,
     countGoods: 0,
-    isVisibleCart: true,
+    isVisibleCart: true, // не пустая
     searchLine: '',
+    showCart: false,
   },
   methods: {
     getJson(url){
@@ -24,31 +25,36 @@ const app = new Vue({
         })
     },
     addProduct(product){
-      let find = this.cartList.find(item => item.id_product === product.id_product);
-      if (find !== undefined) { // Если такой товар уже есть в корзине
-        let new_cart = this.cartList.map((item)=> {
-          if (item.id_product === product.id_product) {
-            item.quantity++;
-          }
-          return item;
-        });
-        this.cartList = [...new_cart];
-      } else {  // Добавляем новый товар
-        product.quantity = 1;
-        this.cartList.push(product);
-      }
+      this.getJson(`${API + '/addToBasket.json'}`)
+          .then(data => {
+            if (data.result === 1) {
+              let find = this.cartList.find(item => item.id_product === product.id_product);
+              if (find !== undefined) { // Если такой товар уже есть в корзине
+                find.quantity++;
+              } else {  // Добавляем новый товар
+                product.quantity = 1;
+                this.cartList.push(product);
+              }
+            } else {
+              alert('error');
+            }
+          });
     },
     removeProduct(product) {
-      this.cartList.splice(this.cartList.indexOf(product), 1);
+      this.getJson(`${API + '/deleteFromBasket.json'}`)
+          .then(data => {
+                if (data.result === 1) {
+                  this.cartList.splice(this.cartList.indexOf(product), 1);
+                } else {
+                  alert('error');
+                }
+          });
     },
     checkValue($event) { //change event - проверка, что не ввели < 1
       if (+$event.target.value < 1 )
         $event.target.value = 1;
     },
     filterGoods($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
       if (this.searchLine.length) { // Если в поле введено слово - фильтруем
           this.products = this.productsAll.filter((item) => {
           let regSearch = new RegExp( `${this.searchLine}`, 'i');
