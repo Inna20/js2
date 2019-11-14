@@ -8,7 +8,14 @@ const app = new Vue({
     methods: {
         getJson(url){
             return fetch(url)
-                .then(result => result.json())
+                .then(result => {
+                    if (result.status === 200) {
+                        return result.json();
+
+                    } else { // вывод ошибки в компоненте errors
+                        this.$refs.errors.setError(result);
+                    }
+                })
                 .catch(error => {
                     console.log(error);
                 })

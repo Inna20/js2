@@ -164,3 +164,10 @@ img {
     border: none;
     border-bottom: 2px solid #fafafa;
 }
+.hidden {
+    display: none;
+}
+.errorMsg {
+    color: red;
+    padding: 20px;
+}
