@@ -3,17 +3,20 @@ Vue.component('errors', {
         return {
             errorText: '',
             errorUrl: '',
-            showError: false,
+        }
+    },
+    computed: {
+        showError(){
+            return this.errorText === '' ? false : true;
         }
     },
     methods: {
         setError(error) {
             this.errorText = error.statusText;
             this.errorUrl  = error.url;
-            this.showError = true;
         }
     },
-    template: `<div class="errorMsg" :class="{'hidden': !showError}">
+    template: `<div class="errorMsg" v-show="showError">
                     <p>Ошибка: {{errorText}} </p>
                     <p>Запрос: {{errorUrl}}</p>
                 </div>`
