@@ -4,7 +4,7 @@ const add = (cart, req) => {
 };
 const change = (cart, req) => {
   const find = cart.contents.find(el => el.id_product === +req.params.id);
-  find.quantity += req.body.quantity;
+  find.quantity++ ; //= req.body.quantity; не работало
   return JSON.stringify(cart, null, 4);
 };
 

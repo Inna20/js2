@@ -1,4 +1,5 @@
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+// const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+const API = 'http://localhost:3000/api/';
 
 const app = new Vue({
     el: '#app',

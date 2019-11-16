@@ -2,14 +2,15 @@ Vue.component('cart', {
     data(){
       return {
           imgCart: 'https://placehold.it/50x100',
-          cartUrl: '/getBasket.json',
+          // cartUrl: '/getBasket.json',
+          cartUrl: 'cart',
           cartItems: [],
           showCart: false,
       }
     },
     methods: {
         addProduct(product){
-            this.$parent.getJson(`${API}/addToBasket.json`)
+            this.$parent.getJson(`${API + this.cartUrl}/${product.id_product}`)
                 .then(data => {
                     if(data.result === 1){
                         let find = this.cartItems.find(el => el.id_product === product.id_product);

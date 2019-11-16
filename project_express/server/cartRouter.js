@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
 });
 // localhost:3000/api/cart/123 // req.params.id
 // localhost:3000/api/cart/?var1='sfsf'&var2='ada' // req.query
-router.put('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   handler(req, res, 'change', './server/db/userCart.json');
 });
 
