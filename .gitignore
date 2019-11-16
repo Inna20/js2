@@ -1,3 +1,5 @@
 .idea/*
 .DS_Store
-node_modules/*
+project_express/node_modules/*
+project_express/package-lock.json
+project_express/package.json
