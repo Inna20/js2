@@ -18,8 +18,12 @@ router.post('/', (req, res) => {
 });
 // localhost:3000/api/cart/123 // req.params.id
 // localhost:3000/api/cart/?var1='sfsf'&var2='ada' // req.query
-router.get('/:id', (req, res) => {
+router.get('/change/:id', (req, res) => {
   handler(req, res, 'change', './server/db/userCart.json');
+});
+
+router.get('/delete/:id', (req, res) => {
+  handler(req, res, 'delete', './server/db/userCart.json');
 });
 
 module.exports = router;

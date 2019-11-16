@@ -10,7 +10,7 @@ Vue.component('cart', {
     },
     methods: {
         addProduct(product){
-            this.$parent.getJson(`${API + this.cartUrl}/${product.id_product}`)
+            this.$parent.getJson(`${API + this.cartUrl}/change/${product.id_product}`)
                 .then(data => {
                     if(data.result === 1){
                         let find = this.cartItems.find(el => el.id_product === product.id_product);
@@ -26,7 +26,7 @@ Vue.component('cart', {
                 })
         },
         remove(item) {
-            this.$parent.getJson(`${API}/deleteFromBasket.json`)
+            this.$parent.getJson(`${API + this.cartUrl}/delete/${item.id_product}`)
                 .then(data => {
                     if(data.result === 1) {
                         if(item.quantity>1){
