@@ -1,127 +1,94 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-// Переделать в ДЗ
-let getRequest_old = (url, cb) => {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      if (xhr.status !== 200) {
-        console.log('Error');
+const app = new Vue({
+  el: '#app',
+  data: {
+    catalogUrl: '/catalogData.json',
+    products: [],
+    productsAll: [], // массив в который мы запоминаем все товары - для фильтрации и вывода если фильтр сброшен
+    imgCatalog: 'https://placehold.it/200x150',
+    imgCart: 'https://placehold.it/50x50',
+    cartUrl: '/getBasket.json',
+    cartList: [],
+    amount: 0,
+    countGoods: 0,
+    isVisibleCart: true, // не пустая
+    searchLine: '',
+    showCart: false,
+  },
+  methods: {
+    getJson(url){
+      return fetch(url)
+        .then(result => result.json())
+        .catch(error => {
+          console.log(error);
+        })
+    },
+    addProduct(product){
+      this.getJson(`${API + '/addToBasket.json'}`)
+          .then(data => {
+            if (data.result === 1) {
+              let find = this.cartList.find(item => item.id_product === product.id_product);
+              if (find !== undefined) { // Если такой товар уже есть в корзине
+                find.quantity++;
+              } else {  // Добавляем новый товар
+                product.quantity = 1;
+                this.cartList.push(product);
+              }
+            } else {
+              alert('error');
+            }
+          });
+    },
+    removeProduct(product) {
+      this.getJson(`${API + '/deleteFromBasket.json'}`)
+          .then(data => {
+                if (data.result === 1) {
+                  this.cartList.splice(this.cartList.indexOf(product), 1);
+                } else {
+                  alert('error');
+                }
+          });
+    },
+    checkValue($event) { //change event - проверка, что не ввели < 1
+      if (+$event.target.value < 1 )
+        $event.target.value = 1;
+    },
+    filterGoods($event) {
+      if (this.searchLine.length) { // Если в поле введено слово - фильтруем
+          this.products = this.productsAll.filter((item) => {
+          let regSearch = new RegExp( `${this.searchLine}`, 'i');
+          return regSearch.test(item.product_name);
+        })
       } else {
-        cb(xhr.responseText);
+        this.products = [...this.productsAll];
       }
     }
-  };
-  xhr.send();
-};
+  },
 
-// with Promise
-let getRequest = (url) => {
-  return new Promise((resolve, reject) => {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          reject('Error');
-        } else {
-          resolve(xhr.responseText);
+  updated() {
+    this.amount = this.cartList.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    this.countGoods = this.cartList.reduce((sumCount, item) => sumCount + +item.quantity, 0);
+    this.isVisibleCart = this.countGoods === 0 ?  false : true;
+  },
+  mounted() {
+    this.getJson(`${API + this.catalogUrl}`)
+      .then(data => {
+        for(let el of data){
+          this.products.push(el);
         }
-      }
-    };
-    xhr.send();
-  })
-  }
+        this.productsAll = [...this.products];
+      });
 
-class ProductItem {
-  constructor(product, img = 'https://placehold.it/200x150') {
-    this.title = product.product_name;
-    this.price = product.price;
-    this.id = product.id;
-    this.img = img;
-  }
-
-  render() {
-    return `<div class="product-item" data-id="${this.id}">
-                <img src="${this.img}" alt="Some img">
-                <div class="desc">
-                    <h3>${this.title}</h3>
-                    <p>${this.price} \u20bd</p>
-                    <button class="buy-btn">Купить</button>
-                </div>
-            </div>`;
-  }
-}
-
-class ProductList {
-  constructor(container = '.products') {
-    this.container = container;
-    this.goods = [];
-    this.allProducts = [];
-    // this._getProducts()
-    //   .then(data => {
-    //     this.goods = [...data];
-    //     this._render();
-    //   });
-    this._fetchProducts();
-    // this._render();
-  }
-
-  _fetchProducts() {
-    // getRequest(`${API}/catalogData.json`, (data) => {
-    //   this.goods = JSON.parse(data);
-    //   this._render();
-    //   console.log(this.goods);
-    // });
-    return getRequest(`${API}/catalogData.json`)
-        .then(result => {
-          this.goods = JSON.parse(result);
-          this._render();
-        })
-        .catch(error => {
-          console.log('Error: ', error);
+    this.getJson(`${API + this.cartUrl}`)
+        .then(data => {
+          for(let el of data.contents){
+            el.url = 'http://example.com';
+            el.totalPrice = el.price;
+            this.cartList.push(el);
+          }
+          this.countGoods = data.countGoods;
+          this.amount = data.amount;
         });
   }
-
-  // _getProducts() {
-  //   return fetch(`${API}/catalogData.json`)
-  //     .then(result => result.json())
-  //     .catch(error => {
-  //       console.log('Error: ', error);
-  //     });
-  // }
-
-  _render() {
-    const block = document.querySelector(this.container);
-
-    for (let product of this.goods) {
-      const productObject = new ProductItem(product);
-      this.allProducts.push(productObject);
-      block.insertAdjacentHTML('beforeend', productObject.render());
-    }
-  }
-}
-
-const list = new ProductList();
-
-
-
-// const products = [
-//   {id: 1, title: 'Notebook', price: 40000},
-//   {id: 2, title: 'Mouse', price: 1000},
-//   {id: 3, title: 'Keyboard', price: 2500},
-//   {id: 4, title: 'Gamepad', price: 1500},
-// ];
-//
-// const renderProduct = (item, img = 'https://placehold.it/200x150') => `<div class="product-item">
-//             <img src="${img}" alt="Some img">
-//             <h3>${item.title}</h3>
-//             <p>${item.price}</p>
-//             <button class="by-btn">Добавить</button>
-//           </div>`;
-//
-// const renderProducts = list => document.querySelector('.products')
-//   .insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join(''));
-//
-// renderProducts(products);
+});

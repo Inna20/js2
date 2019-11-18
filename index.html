@@ -3,17 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Интернет-магазин</title>
-    <link rel="stylesheet" href="./css/normalize.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<header>
-    <div class="logo">Интернет-магазин</div>
-    <button class="btn-cart" type="button">Корзина</button>
-</header>
-<main>
-    <div class="products"></div>
-</main>
-<script src="./js/main.js"></script>
+<div id="app">
+    <header>
+        <div class="logo">E-shop</div>
+        <form action="#" class="search-form" @submit.prevent="filterGoods">
+            <input type="text" class="search-field" v-model="searchLine">
+            <button class="btn-search" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        <div class="cart cart-hover-11">
+                <button class="btn-cart" type="button" @click="showCart = !showCart">Корзина</button>
+                <ul class="drop__ul_flex drop_cart" :class="{'hidden': !showCart}">
+                    <li class="drop__item"  v-for="cartItem of cartList" :key="cartItem.id_product">
+                        <div class="drop_cart__info">
+                            <a :href="cartItem.url" class="drop_cart__title">{{cartItem.product_name}}</a>
+                            <input type="number" v-model.lazy="cartItem.quantity" min="1" @input="checkValue($event)"/>
+                            <p class="drop_cart__price">{{cartItem.price * cartItem.quantity}} $</p>
+                        </div>
+                        <a href="#" class="drop_cart__close" @click="removeProduct(cartItem)">
+                            <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="drop_cart__total" :class="{'hidden': !isVisibleCart}">
+                        <p>Количество товаров: {{countGoods}}</p>
+                        <p>Общая цена: {{amount}} $</p>
+                    </li>
+                    <li class="drop_cart__empty" :class="{'hidden': isVisibleCart}">
+                        <p>Нет данных</p>
+                    </li>
+                </ul>
+        </div>
+    </header>
+    <main>
+        <div class="products">
+            <div class="product-item" v-for="product of products" :key="product.id_product">
+                <img :src="imgCatalog" alt="Some img">
+                <div class="desc">
+                    <h3>{{product.product_name}}</h3>
+                    <p>{{product.price}} $</p>
+                    <button class="buy-btn" @click="addProduct(product)">Купить</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
