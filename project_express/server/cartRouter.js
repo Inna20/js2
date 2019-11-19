@@ -18,11 +18,11 @@ router.post('/', (req, res) => {
 });
 // localhost:3000/api/cart/123 // req.params.id
 // localhost:3000/api/cart/?var1='sfsf'&var2='ada' // req.query
-router.get('/change/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   handler(req, res, 'change', './server/db/userCart.json');
 });
 
-router.get('/delete/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   handler(req, res, 'delete', './server/db/userCart.json');
 });
 
