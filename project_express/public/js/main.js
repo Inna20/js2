@@ -26,7 +26,7 @@ const app = new Vue({
                 })
         },
 
-        putJson(url) {
+        putJson(url, body) {
             return fetch(url, {
                 method: 'PUT',
                 headers: {

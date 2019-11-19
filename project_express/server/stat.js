@@ -3,10 +3,11 @@ const statFile = './server/db/stat.json';
 
 const getStatLine = ((req, res, cart, action) => {
     const find = cart.contents.find(el => el.id_product === +req.params.id);
+    const product_name = find !== undefined ? find.product_name : req.params.id;
 
     return [{
         'action': action,
-        'product_name': find.product_name,
+        'product_name': product_name,
         'date': new Date(),
     }];
 });
